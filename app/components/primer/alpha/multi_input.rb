@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    MultiInput = Primer::FormComponents.from_input(Primer::Forms::Dsl::MultiInput)
+    const_set(:MultiInput, Primer::FormComponents.from_input(Primer::Forms::Dsl::MultiInput))
 
     # Multi inputs are comprised of multiple constituent fields, only one of which is visible
     # at a given time. They are designed for situations where constituent inputs are shown or

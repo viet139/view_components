@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    RadioButtonGroup = Primer::FormComponents.from_input(Primer::Forms::Dsl::RadioButtonGroupInput)
+    const_set(:RadioButtonGroup, Primer::FormComponents.from_input(Primer::Forms::Dsl::RadioButtonGroupInput))
 
     # A group of mutually exclusive radio buttons.
     #

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    RadioButton = Primer::FormComponents.from_input(Primer::Forms::Dsl::RadioButtonInput)
+    const_set(:RadioButton, Primer::FormComponents.from_input(Primer::Forms::Dsl::RadioButtonInput))
 
     # Radio buttons represent one of a set of options and are rendered as `<input type="radio">` in HTML.
     # **NOTE**: You probably want to use the <%= link_to_component(Primer::Alpha::RadioButtonGroup) %>

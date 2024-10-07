@@ -60,4 +60,9 @@ group :development do
   gem "foreman"
 
   gem "listen"
+
+  gem "sorbet"
+  gem "sorbet-runtime"
 end
+
+gem "tapioca", require: false, group: [:development, :test]

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    Select = Primer::FormComponents.from_input(Primer::Forms::Dsl::SelectInput)
+    const_set(:Select, Primer::FormComponents.from_input(Primer::Forms::Dsl::SelectInput))
 
     # Select lists are single-line text inputs rendered as `<select>` tags in HTML.
     #

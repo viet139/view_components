@@ -1,0 +1,7 @@
+--dir
+.
+--ignore=tmp/
+--ignore=vendor/
+--ignore=kuby.rb
+--ignore=config/initializers/kuby.rb
+--suppress-payload-superclass-redefinition-for=Reline::ANSI

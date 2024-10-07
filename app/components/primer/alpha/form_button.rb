@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    FormButton = Primer::FormComponents.from_input(Primer::Forms::Dsl::ButtonInput)
+    const_set(:FormButton, Primer::FormComponents.from_input(Primer::Forms::Dsl::ButtonInput))
 
     # A button input rendered using the HTML `<button type="button">` tag.
     #

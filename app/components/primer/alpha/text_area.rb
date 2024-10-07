@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    TextArea = Primer::FormComponents.from_input(Primer::Forms::Dsl::TextAreaInput)
+    const_set(:TextArea, Primer::FormComponents.from_input(Primer::Forms::Dsl::TextAreaInput))
 
     # Text areas are multi-line text inputs rendered using the `<textarea>` tag in HTML.
     #

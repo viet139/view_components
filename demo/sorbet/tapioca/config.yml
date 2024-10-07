@@ -1,0 +1,18 @@
+gem:
+  # Add your `gem` command parameters here:
+  #
+  exclude:
+  - kuby-core
+  - kuby-azure
+  - kuby-cert-manager
+  - kuby-kind
+  - kuby-crdb
+  # doc: true
+  # workers: 5
+dsl:
+  environment: test
+  # Add your `dsl` command parameters here:
+  #
+  # exclude:
+  # - SomeGeneratorName
+  # workers: 5

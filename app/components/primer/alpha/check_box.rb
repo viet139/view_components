@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    CheckBox = Primer::FormComponents.from_input(Primer::Forms::Dsl::CheckBoxInput)
+    const_set(:CheckBox, Primer::FormComponents.from_input(Primer::Forms::Dsl::CheckBoxInput))
 
     # Check boxes are true/false inputs rendered as `<input type="checkbox">` in HTML.
     #

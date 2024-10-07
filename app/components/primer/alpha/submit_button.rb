@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    SubmitButton = Primer::FormComponents.from_input(Primer::Forms::Dsl::SubmitButtonInput)
+    const_set(:SubmitButton, Primer::FormComponents.from_input(Primer::Forms::Dsl::SubmitButtonInput))
 
     # A submit button input rendered using the HTML `<button type="submit">` tag.
     #

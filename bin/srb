@@ -1,0 +1,4 @@
+#! /bin/bash
+
+cd demo
+exec bundle exec srb "${@}"

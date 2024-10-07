@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    TextField = Primer::FormComponents.from_input(Primer::Forms::Dsl::TextFieldInput)
+    const_set(:TextField, Primer::FormComponents.from_input(Primer::Forms::Dsl::TextFieldInput))
 
     # Text fields are single-line text inputs rendered as `<input type="text">` in HTML.
     #

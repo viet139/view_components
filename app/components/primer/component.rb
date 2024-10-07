@@ -3,6 +3,12 @@
 require "view_component/version"
 
 module Primer
+  extend T::Sig
+
+  SystemArguments = T.type_alias do
+    Hash[T.any(Symbol, String), T.any(String, Numeric)]
+  end
+
   # @private
   # :nocov:
   class Component < ViewComponent::Base

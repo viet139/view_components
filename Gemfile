@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 gemspec
+
 rails_version = (ENV["RAILS_VERSION"] || "7.1.3.2").to_s
 
 gem "rack-cors"
@@ -67,9 +68,13 @@ group :development do
   gem "selenium-webdriver", "~> 4.18"
   gem "simplecov", "~> 0.22.0"
   gem "simplecov-console", "~> 0.9.1"
+  gem "sorbet"
+  gem "sorbet-runtime"
   gem "sprockets"
   gem "sprockets-rails"
   gem "thor"
   gem "timecop"
   gem "yard", "~> 0.9.36"
 end
+
+gem "tapioca", require: false, group: [:development, :test]

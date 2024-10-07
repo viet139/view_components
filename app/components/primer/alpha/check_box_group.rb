@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
+  # :nodoc:
   module Alpha
-    CheckBoxGroup = Primer::FormComponents.from_input(Primer::Forms::Dsl::CheckBoxGroupInput)
+    const_set(:CheckBoxGroup, Primer::FormComponents.from_input(Primer::Forms::Dsl::CheckBoxGroupInput))
 
     # Check box groups consist of one or more related check boxes.
     #

@@ -362,7 +362,7 @@ module Primer
 
       alias show_filter? show_filter
 
-      # @param src [String] The URL to fetch search results from.
+      # @param src [String, nil] The URL to fetch search results from.
       # @param title [String] The title that appears at the top of the panel.
       # @param id [String] The unique ID of the panel.
       # @param size [Symbol] The size of the panel. <%= one_of(Primer::Alpha::Overlay::SIZE_OPTIONS) %>
@@ -371,9 +371,9 @@ module Primer
       # @param no_results_label [String] The label to display when no results are found.
       # @param preload [Boolean] Whether to preload search results when the page loads. If this option is false, results are loaded when the panel is opened.
       # @param dynamic_label [Boolean] Whether or not to display the text of the currently selected item in the show button.
-      # @param dynamic_label_prefix [String] If provided, the prefix is prepended to the dynamic label and displayed in the show button.
-      # @param dynamic_aria_label_prefix [String] If provided, the prefix is prepended to the dynamic label and set as the value of the `aria-label` attribute on the show button.
-      # @param body_id [String] The unique ID of the panel body. If not provided, the body ID will be set to the panel ID with a "-body" suffix.
+      # @param dynamic_label_prefix [String, nil] If provided, the prefix is prepended to the dynamic label and displayed in the show button.
+      # @param dynamic_aria_label_prefix [String, nil] If provided, the prefix is prepended to the dynamic label and set as the value of the `aria-label` attribute on the show button.
+      # @param body_id [String, nil] The unique ID of the panel body. If not provided, the body ID will be set to the panel ID with a "-body" suffix.
       # @param list_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::ActionList) %> component. Only has an effect for the local fetch strategy.
       # @param form_arguments [Hash] Form arguments to pass to the underlying <%= link_to_component(Primer::Alpha::ActionList) %> component. Only has an effect for the local fetch strategy.
       # @param show_filter [Boolean] Whether or not to show the filter input.
@@ -381,7 +381,7 @@ module Primer
       # @param anchor_align [Symbol] The anchor alignment of the Overlay. <%= one_of(Primer::Alpha::Overlay::ANCHOR_ALIGN_OPTIONS) %>
       # @param anchor_side [Symbol] The side to anchor the Overlay to. <%= one_of(Primer::Alpha::Overlay::ANCHOR_SIDE_OPTIONS) %>
       # @param loading_label [String] The aria-label to use when the panel is loading, defaults to 'Loading content...'.
-      # @param loading_description [String] The description to use when the panel is loading. If not provided, no description will be used.
+      # @param loading_description [String, nil] The description to use when the panel is loading. If not provided, no description will be used.
       # @param banner_scheme [Symbol] The scheme for the error banner <%= one_of(Primer::Alpha::SelectPanel::BANNER_SCHEME_OPTIONS) %>
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       def initialize(
