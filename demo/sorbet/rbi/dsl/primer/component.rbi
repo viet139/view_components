@@ -8,7 +8,4 @@
 class Primer::Component
   include GeneratedUrlHelpersModule
   include GeneratedPathHelpersModule
-
-  sig { void }
-  def initialize; end
 end

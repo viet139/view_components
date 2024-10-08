@@ -2,6 +2,7 @@
 
 require "rails/engine"
 require "primer/classify/utilities"
+require "sorbet-runtime"
 
 module Primer
   module ViewComponents

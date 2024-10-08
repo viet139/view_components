@@ -62,8 +62,8 @@ module Tapioca
       def parse
         types = []
         type = nil
-        fixed = false
         name = nil
+
         loop do
           found = false
           TOKENS.each do |token_type, match|
@@ -104,9 +104,15 @@ module Tapioca
     end
 
     class Yard < Tapioca::Dsl::Compiler
+      ConstantType = type_member { { fixed: T.class_of(::ViewComponent::Base) } }
+
+      WHITELIST = [
+        Primer::Alpha::SelectPanel
+      ]
+
       def self.gather_constants
         descendants_of(::ViewComponent::Base).select do |const|
-          registry.find(const)
+          registry.find(const) && WHITELIST.include?(const)
         end
       end
 
@@ -140,8 +146,6 @@ module Tapioca
               memo[name] = param_type
             end
 
-        binding.irb if constant == Primer::Alpha::SelectPanel
-
         parameters = entry.params.each_with_object([]) do |param, memo|
           param_type = parameter_map[param.name.to_sym]
 
@@ -173,7 +177,11 @@ module Tapioca
         end
 
         if converted_types.size > 1
-          "T.any(#{converted_types.join(", ")})"
+          if converted_types.delete("NilClass")
+            "T.nilable(#{converted_types.join(", ")})"
+          else
+            "T.any(#{converted_types.join(", ")})"
+          end
         else
           converted_types.join(", ")
         end
@@ -182,14 +190,11 @@ module Tapioca
       def convert_type_node(node)
         case node
         when CollectionType
-          nilable = node.types.include?("nil")
-
           children = node.types.each_with_object([]) do |child, memo|
-            memo = convert_type_node(child) unless child.name == "nil"
+            memo = convert_type_node(child) unless child.name == "NilClass"
           end
 
-          result = "#{convert_type_name(node.name)}[#{children.join(", ")}]"
-          nilable ? "T.nilable(#{result})" : result
+          "#{convert_type_name(node.name)}[#{children.join(", ")}]"
         when Type
           convert_type_name(node.name)
         end

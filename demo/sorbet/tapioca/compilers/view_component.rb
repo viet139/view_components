@@ -38,9 +38,15 @@ module Tapioca
 
       ConstantType = type_member { { fixed: T.class_of(::ViewComponent::Base) } }
 
+      WHITELIST = [
+        Primer::Alpha::SelectPanel
+      ]
+
       sig { override.returns(T::Enumerable[T.class_of(::ViewComponent::Base)]) }
       def self.gather_constants
-        descendants_of(::ViewComponent::Base)
+        descendants_of(::ViewComponent::Base).select do |const|
+          WHITELIST.include?(const)
+        end
       end
 
       sig { override.void }

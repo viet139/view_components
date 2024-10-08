@@ -8,7 +8,7 @@
 class Primer::Alpha::SelectPanel
   sig do
     params(
-      src: T.any(String, NilClass),
+      src: T.nilable(String),
       title: String,
       id: String,
       size: Symbol,
@@ -17,19 +17,19 @@ class Primer::Alpha::SelectPanel
       no_results_label: String,
       preload: T::Boolean,
       dynamic_label: T::Boolean,
-      dynamic_label_prefix: T.any(String, NilClass),
-      dynamic_aria_label_prefix: T.any(String, NilClass),
-      body_id: T.any(String, NilClass),
-      list_arguments: T::Hash,
-      form_arguments: T::Hash,
+      dynamic_label_prefix: T.nilable(String),
+      dynamic_aria_label_prefix: T.nilable(String),
+      body_id: T.nilable(String),
+      list_arguments: SystemArguments,
+      form_arguments: SystemArguments,
       show_filter: T::Boolean,
       open_on_load: T::Boolean,
       anchor_align: Symbol,
       anchor_side: Symbol,
       loading_label: String,
-      loading_description: T.any(String, NilClass),
+      loading_description: T.nilable(String),
       banner_scheme: Symbol,
-      system_arguments: T::Hash
+      system_arguments: SystemArguments
     ).void
   end
   def initialize(src:, title:, id:, size:, select_variant:, fetch_strategy:, no_results_label:, preload:, dynamic_label:, dynamic_label_prefix:, dynamic_aria_label_prefix:, body_id:, list_arguments:, form_arguments:, show_filter:, open_on_load:, anchor_align:, anchor_side:, loading_label:, loading_description:, banner_scheme:, **system_arguments); end
