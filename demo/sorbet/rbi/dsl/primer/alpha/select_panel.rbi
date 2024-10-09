@@ -6,34 +6,6 @@
 
 
 class Primer::Alpha::SelectPanel
-  sig do
-    params(
-      src: T.nilable(String),
-      title: String,
-      id: String,
-      size: Symbol,
-      select_variant: Symbol,
-      fetch_strategy: Symbol,
-      no_results_label: String,
-      preload: T::Boolean,
-      dynamic_label: T::Boolean,
-      dynamic_label_prefix: T.nilable(String),
-      dynamic_aria_label_prefix: T.nilable(String),
-      body_id: T.nilable(String),
-      list_arguments: SystemArguments,
-      form_arguments: SystemArguments,
-      show_filter: T::Boolean,
-      open_on_load: T::Boolean,
-      anchor_align: Symbol,
-      anchor_side: Symbol,
-      loading_label: String,
-      loading_description: T.nilable(String),
-      banner_scheme: Symbol,
-      system_arguments: SystemArguments
-    ).void
-  end
-  def initialize(src:, title:, id:, size:, select_variant:, fetch_strategy:, no_results_label:, preload:, dynamic_label:, dynamic_label_prefix:, dynamic_aria_label_prefix:, body_id:, list_arguments:, form_arguments:, show_filter:, open_on_load:, anchor_align:, anchor_side:, loading_label:, loading_description:, banner_scheme:, **system_arguments); end
-
   sig { returns(T.untyped) }
   def error_content; end
 
@@ -78,4 +50,83 @@ class Primer::Alpha::SelectPanel
 
   sig { params(args: T.nilable(T::Array[T.untyped]), _arg1: T.untyped, block: T.untyped).returns(T.untyped) }
   def with_subtitle(*args, **_arg1, &block); end
+
+  sig { returns(Symbol) }
+  def banner_scheme; end
+
+  sig { returns(T.nilable(String)) }
+  def body_id; end
+
+  sig { void }
+  def error_content; end
+
+  sig { returns(Symbol) }
+  def fetch_strategy; end
+
+  sig { void }
+  def footer; end
+
+  sig do
+    params(
+      src: T.nilable(String),
+      title: String,
+      id: String,
+      size: Symbol,
+      select_variant: Symbol,
+      fetch_strategy: Symbol,
+      no_results_label: String,
+      preload: T::Boolean,
+      dynamic_label: T::Boolean,
+      dynamic_label_prefix: T.nilable(String),
+      dynamic_aria_label_prefix: T.nilable(String),
+      body_id: T.nilable(String),
+      list_arguments: SystemArguments,
+      form_arguments: SystemArguments,
+      show_filter: T::Boolean,
+      open_on_load: T::Boolean,
+      anchor_align: Symbol,
+      anchor_side: Symbol,
+      loading_label: String,
+      loading_description: T.nilable(String),
+      banner_scheme: Symbol,
+      system_arguments: SystemArguments
+    ).void
+  end
+  def initialize(src: nil, title: "Menu", id: self.class.generate_id, size: :small, select_variant: DEFAULT_SELECT_VARIANT, fetch_strategy: DEFAULT_FETCH_STRATEGY, no_results_label: "No results found", preload: DEFAULT_PRELOAD, dynamic_label: false, dynamic_label_prefix: nil, dynamic_aria_label_prefix: nil, body_id: nil, list_arguments: {}, form_arguments: {}, show_filter: true, open_on_load: false, anchor_align: Primer::Alpha::Overlay::DEFAULT_ANCHOR_ALIGN, anchor_side: Primer::Alpha::Overlay::DEFAULT_ANCHOR_SIDE, loading_label: "Loading content...", loading_description: nil, banner_scheme: DEFAULT_BANNER_SCHEME, **system_arguments); end
+
+  sig { returns(String) }
+  def panel_id; end
+
+  sig { returns(T::Boolean) }
+  def preload; end
+
+  sig { returns(T::Boolean) }
+  def preload?; end
+
+  sig { void }
+  def preload_error_content; end
+
+  sig { returns(Symbol) }
+  def select_variant; end
+
+  sig { void }
+  def show_button; end
+
+  sig { returns(T::Boolean) }
+  def show_filter; end
+
+  sig { returns(T::Boolean) }
+  def show_filter?; end
+
+  sig { returns(T.nilable(String)) }
+  def src; end
+
+  sig { void }
+  def subtitle; end
+
+  sig { params(system_arguments: SystemArguments).void }
+  def with_avatar_item(**system_arguments); end
+
+  sig { params(system_arguments: SystemArguments).void }
+  def with_item(**system_arguments); end
 end

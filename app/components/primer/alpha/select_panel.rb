@@ -269,7 +269,7 @@ module Primer
       class ItemList < Primer::Alpha::ActionList
         include Utils
 
-        # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>.
+        # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>.
         def initialize(**system_arguments)
           raise_if_role_given!(**system_arguments)
           select_variant = system_arguments.delete(:select_variant) || Primer::Alpha::ActionList::DEFAULT_SELECT_VARIANT
@@ -283,11 +283,17 @@ module Primer
           )
         end
 
+        # Adds an item to the list.
+        #
+        # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
         def with_item(**system_arguments)
           raise_if_role_given!(**system_arguments)
           super
         end
 
+        # Adds an avatar item to the list.
+        #
+        # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
         def with_avatar_item(**system_arguments)
           raise_if_role_given!(**system_arguments)
           super
@@ -320,7 +326,7 @@ module Primer
 
       # The URL to fetch search results from.
       #
-      # @return [String]
+      # @return [String, NilClass]
       attr_reader :src
 
       # The unique ID of the panel.
@@ -330,7 +336,7 @@ module Primer
 
       # The unique ID of the panel body.
       #
-      # @return [String]
+      # @return [String, NilClass]
       attr_reader :body_id
 
       # <%= one_of(Primer::Alpha::ActionMenu::SELECT_VARIANT_OPTIONS) %>
@@ -384,6 +390,8 @@ module Primer
       # @param loading_description [String, NilClass] The description to use when the panel is loading. If not provided, no description will be used.
       # @param banner_scheme [Symbol] The scheme for the error banner <%= one_of(Primer::Alpha::SelectPanel::BANNER_SCHEME_OPTIONS) %>
       # @param system_arguments [SystemArguments] <%= link_to_system_arguments_docs %>
+      #
+      # @return [void]
       def initialize(
         src: nil,
         title: "Menu",
@@ -495,31 +503,33 @@ module Primer
       # @!parse
       #   # Adds an item to the list. Note that this method only has an effect for the local fetch strategy.
       #   #
-      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
+      #   # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
+      #   # @return [void]
       #   def with_item(**system_arguments)
       #   end
       #
       #   # Adds an avatar item to the list. Note that this method only has an effect for the local fetch strategy.
       #
-      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
-      #   def with_avatar_item
+      #   # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
+      #   # @return [void]
+      #   def with_avatar_item(**system_arguments)
       #   end
 
       delegate :with_item, :with_avatar_item, to: :@list
 
       # Renders content in a footer region below the list of items.
       #
-      # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::Dialog::Footer) %>.
+      # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Alpha::Dialog::Footer) %>.
       renders_one :footer, Primer::Alpha::Dialog::Footer
 
       # Renders content underneath the title at the top of the panel.
       #
-      # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::Dialog::Header) %>'s `subtitle` slot.
+      # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Alpha::Dialog::Header) %>'s `subtitle` slot.
       renders_one :subtitle
 
       # Adds a show button (i.e. a button) that will open the panel when clicked.
       #
-      # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Beta::Button) %>.
+      # @param system_arguments [SystemArguments] The arguments accepted by <%= link_to_component(Primer::Beta::Button) %>.
       renders_one :show_button, lambda { |**system_arguments|
         system_arguments[:id] = "#{@panel_id}-button"
 
@@ -533,11 +543,13 @@ module Primer
 
       # Customizable content for the error message that appears when items are fetched for the first time. This message
       # appears in place of the list of items.
+      #
       # For more information, see the [documentation regarding SelectPanel error messaging](/components/selectpanel#errorwarning).
       renders_one :preload_error_content
 
       # Customizable content for the error message that appears when items are fetched as the result of a filter
       # operation. This message appears as a banner above the previously fetched list of items.
+      #
       # For more information, see the [documentation regarding SelectPanel error messaging](/components/selectpanel#errorwarning).
       renders_one :error_content
 

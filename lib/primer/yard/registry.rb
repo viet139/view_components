@@ -66,6 +66,10 @@ module Primer
         end
       end
 
+      def find_method(name)
+        docs.meths.find { |mtd| mtd.name == name }
+      end
+
       def title
         metadata[:title]
       end

@@ -1,111 +1,14 @@
 # frozen_string_literal: true
 
 require "primer/yard"
-
-require 'strscan'
+require_relative "./yard/types_parser"
 
 module Tapioca
   module Compilers
-    class Type
-      attr_accessor :name
-
-      def initialize(name)
-        @name = name
-      end
-    end
-
-    class CollectionType < Type
-      attr_accessor :types
-
-      def initialize(name, types)
-        @name = name
-        @types = types
-      end
-    end
-
-    class FixedCollectionType < CollectionType
-    end
-
-    class HashCollectionType < Type
-      attr_accessor :key_types, :value_types
-
-      def initialize(name, key_types, value_types)
-        @name = name
-        @key_types = key_types
-        @value_types = value_types
-      end
-    end
-
-    class TypesParser
-      TOKENS = {
-        collection_start: /</,
-        collection_end: />/,
-        fixed_collection_start: /\(/,
-        fixed_collection_end: /\)/,
-        type_name: /#\w+|((::)?\w+)+/,
-        type_next: /[,;]/,
-        whitespace: /\s+/,
-        hash_collection_start: /\{/,
-        hash_collection_next: /=>/,
-        hash_collection_end: /\}/,
-        parse_end: nil
-      }
-
-      def self.parse(string)
-        new(string).parse
-      end
-
-      def initialize(string)
-        @scanner = StringScanner.new(string)
-      end
-
-      def parse
-        types = []
-        type = nil
-        name = nil
-
-        loop do
-          found = false
-          TOKENS.each do |token_type, match|
-            if (match.nil? && @scanner.eos?) || (match && token = @scanner.scan(match))
-              found = true
-              case token_type
-              when :type_name
-                raise SyntaxError, "expecting END, got name '#{token}'" if name
-                name = token
-              when :type_next
-                raise SyntaxError, "expecting name, got '#{token}' at #{@scanner.pos}" if name.nil?
-                unless type
-                  type = Type.new(name)
-                end
-                types << type
-                type = nil
-                name = nil
-              when :fixed_collection_start, :collection_start
-                name ||= "Array"
-                klass = token_type == :collection_start ? CollectionType : FixedCollectionType
-                type = klass.new(name, parse)
-              when :hash_collection_start
-                name ||= "Hash"
-                type = HashCollectionType.new(name, parse, parse)
-              when :hash_collection_next, :hash_collection_end, :fixed_collection_end, :collection_end, :parse_end
-                raise SyntaxError, "expecting name, got '#{token}'" if name.nil?
-                unless type
-                  type = Type.new(name)
-                end
-                types << type
-                return types
-              end
-            end
-          end
-          raise SyntaxError, "invalid character at #{@scanner.peek(1)}" unless found
-        end
-      end
-    end
-
     class Yard < Tapioca::Dsl::Compiler
       ConstantType = type_member { { fixed: T.class_of(::ViewComponent::Base) } }
 
+      # only add types for these components (for now)
       WHITELIST = [
         Primer::Alpha::SelectPanel
       ]
@@ -125,48 +28,82 @@ module Tapioca
         entry = self.class.registry.find(constant)
 
         root.create_path(constant) do |klass|
-          add_initialize_to(klass, entry)
+          [*constant.public_instance_methods(false), :initialize].each do |method_name|
+            add_method_to(klass, entry, method_name)
+          end
         end
       end
 
       private
 
-      def add_initialize_to(klass, entry)
-        parameter_order =
-          constant
-            .instance_method(:initialize)
-            .parameters
-            .map(&:last)
+      def param_type_from_name(param_name)
+        if param_name.start_with?("**")
+          :keyrest
+        elsif param_name.start_with?("&")
+          :block
+        elsif param_name.end_with?(":")
+          :key
+        else
+          # i.e. positional
+          :req
+        end
+      end
 
-        parameter_map =
-          constant
-            .instance_method(:initialize)
-            .parameters
-            .each_with_object({}) do |(param_type, name), memo|
-              memo[name] = param_type
+      def sanitize_param_name(param_name)
+        param_name
+          .delete_suffix(":")
+          .delete_prefix("&")
+          .delete_prefix("**")
+      end
+
+      def add_method_to(klass, entry, method_name)
+        yard_method = entry.find_method(method_name)
+        return unless yard_method
+
+        yard_return_types = yard_method.tags(:return) || []
+        yard_params = (yard_method.tags(:param) || []).each_with_object({}) do |param_tag, memo|
+          memo[param_tag.name] = param_tag
+        end
+
+        parameters = yard_method.parameters.each_with_object([]) do |(param_name, default_value), memo|
+          sanitized_param_name = sanitize_param_name(param_name)
+          yard_param = yard_params[sanitized_param_name]
+
+          sorbet_param =
+            case param_type_from_name(param_name)
+            when :req
+              if default_value
+                create_opt_param(sanitized_param_name, type: convert_types(yard_param.types), default: default_value)
+              else
+                create_param(sanitized_param_name, type: convert_types(yard_param.types))
+              end
+            when :key
+              if default_value
+                create_kw_opt_param(sanitized_param_name, type: convert_types(yard_param.types), default: default_value)
+              else
+                create_kw_param(sanitized_param_name, type: convert_types(yard_param.types))
+              end
+            when :keyrest
+              create_kw_rest_param(sanitized_param_name, type: convert_types(yard_param.types))
+            when :block
+              # TODO: what?
+              create_block_param(sanitized_param_name, type: convert_types(yard_param.types))
             end
-
-        parameters = entry.params.each_with_object([]) do |param, memo|
-          param_type = parameter_map[param.name.to_sym]
-
-          sorbet_param = case param_type
-          when :key
-            create_kw_param(param.name, type: convert_types(param.types))
-          when :keyrest
-            create_kw_rest_param(param.name, type: convert_types(param.types))
-          when :block
-            # TODO: what?
-            create_block_param(param.name, type: convert_types(param.types))
-          end
 
           memo << sorbet_param if sorbet_param
         end
 
-        parameters.sort! do |a, b|
-          parameter_order.index(a.param.name.to_sym) <=> parameter_order.index(b.param.name.to_sym)
+        return_type = if yard_return_types.empty?
+          "void"
+        else
+          convert_types(yard_return_types.first.types)
         end
 
-        klass.create_method("initialize", parameters: parameters, return_type: "void")
+        klass.create_method(
+          method_name,
+          parameters: parameters,
+          return_type: return_type
+        )
       end
 
       def convert_types(type_strs)
