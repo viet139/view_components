@@ -1226,9 +1226,10 @@ module Alpha
       assert_equal "item2", response.dig(*%w(form_params item))
     end
 
-    def test_single_select_form_submits_pre_selected_item
+    def test_single_select_form_submits_pre_selected_item_local_fetch
       visit_preview(:single_select_form, route_format: :json)
 
+      assert_selector "input[type='hidden'][name='item'][value='item1']", visible: :hidden
       # the first item has been pre-selected, so there's no need to select any items
       click_on "Submit"
 
